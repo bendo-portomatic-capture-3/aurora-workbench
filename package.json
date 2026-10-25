@@ -1,0 +1,9 @@
+{
+  "name": "aurora-generated-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated dependency graph fixture; never installed or executed",
+  "dependencies": {
+    "lodash": "4.17.20"
+  }
+}
