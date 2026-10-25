@@ -1,0 +1,22 @@
+name: Aurora evidence
+on:
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: Evidence theme
+        default: accessibility
+        required: false
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Produce generated evidence
+        run: |
+          mkdir -p evidence
+          printf "Aurora accessibility café Tokyo\n" > evidence/report.txt
+          echo "FactoryV2 completed evidence"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aurora-evidence
+          path: evidence/report.txt
+          retention-days: 30

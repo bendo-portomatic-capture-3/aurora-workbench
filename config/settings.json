@@ -1,0 +1,9 @@
+{
+  "feature": "aurora",
+  "enabled": true,
+  "owners": [
+    "Mira",
+    "Nora"
+  ],
+  "threshold": 90
+}

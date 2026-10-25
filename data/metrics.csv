@@ -1,0 +1,4 @@
+region,latency_ms,success
+Tokyo,42,true
+Berlin,55,true
+São Paulo,78,false
