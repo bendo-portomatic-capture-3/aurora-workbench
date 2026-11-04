@@ -1,0 +1,47 @@
+name: Aurora extended generated evidence
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  pages: write
+  id-token: write
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - name: Produce generated fixture files
+        run: |
+          mkdir -p generated-package generated-site
+          printf %s "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><title>Aurora generated evidence</title><main><h1>Aurora accessibility evidence</h1><p>FactoryV2 generated café 東京 research. Recovery target: 90 seconds.</p></main></html>\n" > generated-site/index.html
+          printf %s "{\"name\":\"@bendo-portomatic-capture-3/aurora-generated-fixture\",\"version\":\"1.0.0\",\"description\":\"Generated Aurora API fixture; no runtime dependencies\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/bendo-portomatic-capture-3/aurora-workbench.git\"},\"files\":[\"README.md\"]}" > generated-package/package.json
+          echo "Generated Aurora accessibility evidence café Tokyo" > generated-package/README.md
+          tar -czf aurora-evidence.tar.gz generated-package generated-site
+      - uses: actions/cache@v4
+        with:
+          path: generated-site
+          key: aurora-generated-evidence-v2-once
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: aurora-evidence.tar.gz
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+      - name: Publish owned generated fixture package
+        working-directory: generated-package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --registry=https://npm.pkg.github.com
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aurora-extended-evidence
+          path: aurora-evidence.tar.gz
+          retention-days: 30
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: generated-site
+      - uses: actions/deploy-pages@v4
